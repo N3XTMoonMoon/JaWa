@@ -6,8 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="users", schema="user")
-public class user {
+@Table(name="users", schema="users")
+public class User {
 
 	@Id
 	@Column(name="user_name")
@@ -17,15 +17,20 @@ public class user {
 	
 	private String role;
 
-	public user(String userName, int password, String role) {
+	public User(String userName, int password, String role) {
 		this.userName = userName;
 		this.password = password;
 		this.role = role;
 	}
 
-	public user() {
+	public User() {
 	}
 
+	@Override
+	public String toString() {
+		return "UserName: "+userName+"; Role: "+role;//password is not printed for security reasons
+	}
+	
 	public String getUserName() {
 		return userName;
 	}

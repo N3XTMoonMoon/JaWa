@@ -15,8 +15,8 @@ public class MainView extends VerticalLayout {
 	public MainView() {
 		TextField userName = new TextField();
 		PasswordField password = new PasswordField();
-		add(userName);
-		add(password);
-		add(new Button("Login", e -> Notification.show(userName.getValue()+" "+password.getValue())));
+		add(userName,
+		password,
+		new Button("Login", e -> Notification.show(userName.getValue()+" "+password.getValue())));
 	}
 }
