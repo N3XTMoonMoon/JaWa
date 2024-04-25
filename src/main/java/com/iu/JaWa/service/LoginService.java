@@ -23,6 +23,17 @@ public class LoginService {
 		System.out.println(createNewUser(test).toString());
 	}
 	
+	public String login(String userName, int password) {
+		
+		int userPwd = getUserHash(userName);
+		
+		if(userPwd == password) {
+			return "SUCCESS";
+		}else {
+			return "FAILURE";
+		}
+	}
+	
 	/**
 	 * searches for given userName on "user.users" table
 	 * 

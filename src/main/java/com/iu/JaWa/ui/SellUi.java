@@ -7,16 +7,18 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
-@Route("/login")
-public class MainView extends VerticalLayout {
+@Route("/sell")
+public class SellUi extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	public MainView() {
-		TextField userName = new TextField();
-		PasswordField password = new PasswordField();
-		add(userName,
-		password,
-		new Button("Login", e -> Notification.show(userName.getValue()+" "+password.getValue())));
+	public SellUi() {
+		
+		Button logoutBtn = new Button("Logout");
+		logoutBtn.addClickListener(e -> 
+			logoutBtn.getUI().ifPresent(ui -> ui.navigate("/login"))
+		);
+
+		add(logoutBtn);
 	}
 }
