@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.iu.JaWa.entity.User;
 import com.iu.JaWa.repository.UserRepository;
+import com.vaadin.flow.server.VaadinService;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 
 @Service
 public class LoginService {
@@ -34,7 +36,31 @@ public class LoginService {
 		}
 	}
 	
+	public boolean isLoggedIn() {
+		
+
+		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+		
+		for(Cookie currentCookie : cookies) {
+			if(currentCookie.getName().equals("JaWa") && currentCookie.getValue().equals("SUCCESS")) {
+				return true;
+			}
+		}
+		//return after complete list is checked
+		return false;
+	}
+	
+	public void logout() {
+		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+		for(Cookie currentCookie : cookies) {
+			if(currentCookie.getName().equals("JaWa") && currentCookie.getValue().equals("SUCCESS")) {
+				currentCookie.setValue("FAILURE");
+			}
+		}
+	}
+	
 	/**
+	 * TODO: move to UserService
 	 * searches for given userName on "user.users" table
 	 * 
 	 * @param username
@@ -51,6 +77,7 @@ public class LoginService {
 		}
 	}
 	
+	//TODO: move to UserService
 	public User createNewUser(User newUser) {
 		
 		int hash = getUserHash(newUser.getUserName());
@@ -63,6 +90,7 @@ public class LoginService {
 		}
 	}
 	
+	//TODO: move to UserService
 	public void removeUser (User removeUser) {
 		if(removeUser==null) {
 			throw new NullPointerException();
