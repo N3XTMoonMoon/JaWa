@@ -6,41 +6,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.iu.JaWa.service.LoginService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.sidenav.SideNav;
-import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 
 @Route("/sell")
 public class SellUi extends VerticalLayout implements BeforeEnterObserver{
 
-	private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = 7570833660999463326L;
+
 	@Autowired
 	private LoginService loginService;
 
 	public SellUi() {
-		
-		
-		
 		DatePicker picker = new DatePicker();
 		
-		MenuBar menu = new MenuBar();
-		menu.addItem("Verkauf");
-		menu.addItem("Nutzerverwaltung");
+		Tab einkaufTab = new Tab("Einkauf");
+		Tab userAddingTab = new Tab("Nutzer");
+		Tab itemAddingTab = new Tab("Artikel");
+		Tabs tabs = new Tabs(einkaufTab,userAddingTab,itemAddingTab);
+		tabs.addSelectedChangeListener(e -> {
+			Notification.show("Gewechselt zu: "+e.getSelectedTab().getLabel());
+			
+		});
 		
-		SideNav sideNav = new SideNav();
-		sideNav.addItem(new SideNavItem("RICHSEDRT"));
-		sideNav.setCollapsible(true);
-		
-		Tab tab = new Tab("Tab");
-		Tabs tabs = new Tabs(tab);
+		RouteTabs routeTabs = new RouteTabs();
+		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
+		routeTabs.add(new RouterLink("Nutzer", UserAdministrationUI.class));
+		routeTabs.add(new RouterLink("Artikel", ArticleUi.class));
 		
 		Button logoutBtn = new Button("Logout");
 		logoutBtn.addClickListener(e -> {
@@ -48,7 +46,7 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver{
 			logoutBtn.getUI().ifPresent(ui -> ui.navigate("/login"));}
 		);
 
-		add(tabs,picker,logoutBtn);
+		add(routeTabs,picker,logoutBtn);
 	}
 	
 	@Override
@@ -62,4 +60,6 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver{
 //			this.getUI().ifPresent(e -> e.navigate("/login"));
 		}
 	}
+	
+	
 }

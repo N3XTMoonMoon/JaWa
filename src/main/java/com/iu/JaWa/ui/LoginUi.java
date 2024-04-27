@@ -18,7 +18,7 @@ import jakarta.servlet.http.Cookie;
 @PageTitle("Login | JaWa")
 public class LoginUi extends VerticalLayout {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -1614052867780794376L;
 
 	@Autowired
 	private LoginService loginService;
