@@ -57,7 +57,6 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver{
 			Notification.show("Sie sind nicht angemeldet! Bitte melden Sie sich unter \"/login\" an");
 			
 			event.rerouteTo(LoginUi.class);
-//			this.getUI().ifPresent(e -> e.navigate("/login"));
 		}
 	}
 	

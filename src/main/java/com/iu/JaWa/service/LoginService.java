@@ -15,12 +15,12 @@ public class LoginService {
 	@Autowired
 	private UserService userService;
 	
-	@PostConstruct
-	private void test() {
-		System.out.println(userService.getUserHash("admin"));
-		User test = new User("test","test".hashCode(),"USER");
-		System.out.println(userService.createNewUser(test).toString());
-	}
+//	@PostConstruct
+//	private void test() {
+//		System.out.println(userService.getUserHash("admin"));
+//		User test = new User("test","test".hashCode(),"USER");
+//		System.out.println(userService.createNewUser(test).toString());
+//	}
 	
 	public String login(String userName, int password) {
 		
