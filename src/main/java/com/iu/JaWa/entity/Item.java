@@ -32,7 +32,7 @@ public class Item {
 	
 	private int stock;
 	
-	@ManyToOne//(optional=false)
+	@ManyToOne
 	@JoinColumn(name="category",referencedColumnName="cat_id")
 	private Categorie category;
 	

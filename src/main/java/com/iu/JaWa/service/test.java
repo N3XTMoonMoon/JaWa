@@ -21,7 +21,7 @@ public class test {
 	@Autowired
 	CategoryRepository catrepo;
 	
-	@PostConstruct
+
 	public void testMethods() {
 		fetchItems();
 		fetchCategories();

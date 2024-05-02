@@ -15,13 +15,17 @@ public class LoginService {
 	@Autowired
 	private UserService userService;
 	
-//	@PostConstruct
+
 //	private void test() {
 //		System.out.println(userService.getUserHash("admin"));
 //		User test = new User("test","test".hashCode(),"USER");
 //		System.out.println(userService.createNewUser(test).toString());
 //	}
 	
+	/**
+	 * 
+	 * @return return "SUCCESS" or "FAILURE" depending on the fitting passwordhash
+	 */
 	public String login(String userName, int password) {
 		
 		int userPwd = userService.getUserHash(userName);
@@ -33,6 +37,10 @@ public class LoginService {
 		}
 	}
 	
+	/**
+	 * checks if cookie "JaWa" is set to "SUCCESS"
+	 * @return true if it matches. false otherwise
+	 */
 	public boolean isLoggedIn() {
 		
 		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
@@ -46,6 +54,9 @@ public class LoginService {
 		return false;
 	}
 	
+	/**
+	 * sets cookie "JaWa" to "FAILURE" if it was "SUCCESS"
+	 */
 	public void logout() {
 		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 		for(Cookie currentCookie : cookies) {

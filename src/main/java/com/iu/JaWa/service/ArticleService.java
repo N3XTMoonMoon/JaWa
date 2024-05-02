@@ -1,5 +1,7 @@
 package com.iu.JaWa.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,5 +17,11 @@ public class ArticleService {
 	public Item saveArticleToDb(Item item) {
 		
 		return itemRepo.save(item);
+	}
+
+	public List<Item> getAllItems() {
+		List<Item> itemList = itemRepo.findAll();
+		
+		return itemList;
 	}
 }

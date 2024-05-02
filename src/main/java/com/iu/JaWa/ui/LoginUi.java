@@ -56,8 +56,8 @@ public class LoginUi extends VerticalLayout {
 		// Create a new cookie
 		Cookie myCookie = new Cookie("JaWa", "SUCCESS");
 
-		// Make cookie expire in 2 minutes
-		myCookie.setMaxAge(120);
+		// Make cookie expire in 20 minutes
+		myCookie.setMaxAge(1200);
 
 		// Set the cookie path.
 		myCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
