@@ -32,6 +32,8 @@ public class Item {
 	
 	private int stock;
 	
+	//TODO: MHD hinzufügen
+	
 	@ManyToOne
 	@JoinColumn(name="category",referencedColumnName="cat_id")
 	private Categorie category;

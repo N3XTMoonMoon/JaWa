@@ -40,24 +40,32 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 	private ArticleService artService;
 	
 	private List<Categorie> categories = new ArrayList<Categorie>();
-	private List<String> itemList = new ArrayList<String>();
 	ListBox<String> itemListBox = new ListBox<String>();
 	
 	Grid<Item> grid;
 	
 	public ArticleUi() {
 		
-		RouteTabs routeTabs = new RouteTabs();
-		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
-		routeTabs.add(new RouterLink("Nutzer", UserAdministrationUI.class));
-		routeTabs.add(new RouterLink("Artikel", ArticleUi.class));
+		RouteTabs routeTabs =  RouteTabs.createTabs();
         
+		/**
+		 * TODO:
+		 * - Filtern nach Kategorie y
+		 * - Anlegen von Artikeln direkt hinzufügen
+		 * - Auf-/abstiegend sortieren in allen Spalten
+		 * - Lagerbestand anpassen können
+		 * - Artikelanlage in drop down (eigener Bereich)
+		 * 
+		 * - item Detail
+		 * 	- Name, Preis anzeigen
+		 * 	- beim Aufklappen noch den Rest wie art NR, Kategorie und so anzeigen
+		 */
 		grid = new Grid<>(Item.class,false);
-		grid.addColumn(Item::getArticleNumber).setHeader("Artikelnummer");
-		grid.addColumn(Item::getName).setHeader("Name");
+		grid.addColumn(Item::getArticleNumber).setHeader("Artikelnummer").setSortable(true);
+		grid.addColumn(Item::getName).setHeader("Name").setSortable(true);
 		grid.addColumn(Item::getDescription).setHeader("Beschreibung");
-		grid.addColumn(Item::getCategory).setHeader("Kategorie");
-		grid.addColumn(Item::getPrice).setHeader("Preis");
+		grid.addColumn(Item::getCategory).setHeader("Kategorie").setSortable(true);
+		grid.addColumn(Item::getPrice).setHeader("Preis").setSortable(true);
 		grid.addColumn(Item::getStock).setHeader("Lagerstand");
 		
 		

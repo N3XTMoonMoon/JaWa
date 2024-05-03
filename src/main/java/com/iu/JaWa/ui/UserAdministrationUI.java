@@ -9,7 +9,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 
 @Route("/user")
 public class UserAdministrationUI extends VerticalLayout implements BeforeEnterObserver{
@@ -21,12 +20,16 @@ public class UserAdministrationUI extends VerticalLayout implements BeforeEnterO
 
 	public UserAdministrationUI() {
 		
-		RouteTabs routeTabs = new RouteTabs();
-		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
-		routeTabs.add(new RouterLink("Nutzer", UserAdministrationUI.class));
-		routeTabs.add(new RouterLink("Artikel", ArticleUi.class));
+		RouteTabs routeTabs =  RouteTabs.createTabs();
 		
 		TextField userName = new TextField();
+		
+		/**
+		 * TODO:
+		 * - grid mit item Detail hinzufügen
+		 * 		Nur für admin sichtbar
+		 * - Grid mi
+		 */
 		
 		add(routeTabs,userName);
 	}

@@ -30,4 +30,14 @@ class RouteTabs extends Tabs implements BeforeEnterObserver {
         // In case no tabs will match
         setSelectedTab(null);
     }
+    
+    public static RouteTabs createTabs() {
+    	
+    	RouteTabs routeTabs = new RouteTabs();
+		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
+		routeTabs.add(new RouterLink("Nutzer-Stammdaten", UserAdministrationUI.class));
+		routeTabs.add(new RouterLink("Artikel-Stammdaten", ArticleUi.class));
+    	
+    	return routeTabs;
+    }
 }

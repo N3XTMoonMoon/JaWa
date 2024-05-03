@@ -13,7 +13,6 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 
 @Route("/sell")
 public class SellUi extends VerticalLayout implements BeforeEnterObserver{
@@ -24,6 +23,9 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver{
 	private LoginService loginService;
 
 	public SellUi() {
+		
+		RouteTabs routeTabs =  RouteTabs.createTabs();
+		
 		DatePicker picker = new DatePicker();
 		
 		Tab einkaufTab = new Tab("Einkauf");
@@ -35,10 +37,7 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver{
 			
 		});
 		
-		RouteTabs routeTabs = new RouteTabs();
-		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
-		routeTabs.add(new RouterLink("Nutzer", UserAdministrationUI.class));
-		routeTabs.add(new RouterLink("Artikel", ArticleUi.class));
+		
 		
 		Button logoutBtn = new Button("Logout");
 		logoutBtn.addClickListener(e -> {
