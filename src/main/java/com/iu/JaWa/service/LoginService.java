@@ -25,7 +25,7 @@ public class LoginService {
 //		System.out.println(userService.createNewUser(test).toString());
 //	}
 	
-	//TODO: fix bug, where comlete ui is visible after other user is logged in
+	//FIXME: fix bug, where comlete ui is visible after other user is logged in
 	public void saveCookie(User loginUser) {
 		
 		Optional<User> usr = userService.findUser(loginUser.getUserName());

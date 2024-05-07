@@ -85,7 +85,7 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		//---------------------------------------
 		//Add new article stuff
 		
-		Button newArticleBtn = new Button("Neuer Artikel");
+		Button newArticleBtn = new Button("Clear");
 		//reset all value fields
 		newArticleBtn.addClickListener(e -> {
 			articleName.setValue("");
@@ -183,6 +183,24 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		
 		Accordion accordion = new Accordion();
 		accordion.add("Artikeldetails",inputLayout);
+		
+		TextField category = new TextField("Kategorename");
+		FormLayout categoryInputLayout = new FormLayout();
+		Button categoryBtn = new Button("Hinzufügen");
+		categoryBtn.addClickListener(e -> {
+			try {
+				artService.saveCategory(category.getValue());
+				Notification.show("Kategorie: "+category.getValue()+" gespeichert");
+			}catch(Exception ex) {
+				Notification.show(ex.getMessage());
+				ex.printStackTrace();
+			}
+			
+		});
+		categoryInputLayout.add(category);
+		categoryInputLayout.add(categoryBtn);
+		accordion.add("Kategoriedetails",categoryInputLayout);
+		
 		
 		
 		

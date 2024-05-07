@@ -1,6 +1,7 @@
 package com.iu.JaWa.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,13 @@ public class ArticleService {
 		//filter placehoder category
 		return catRepo.findAll().stream().filter(e -> !e.equals(new Categorie(0, "MISSING"))).collect(Collectors.toList());
 	}
-	
+
+	public void saveCategory(String value) {
+		
+		Optional<Categorie> catResult = catRepo.findByName(value);
+
+		if(!catResult.isPresent()) {
+			catRepo.save(new Categorie(value));
+		}
+	}
 }

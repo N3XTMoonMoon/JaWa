@@ -4,16 +4,21 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name="category",schema="article")
+@SequenceGenerator(name = "some_seq", sequenceName = "article.category_seq")
 public class Categorie {
 
 	@Id
 	@Column(name="cat_id")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "some_seq")
 	private int id;
 	
 	private String name;
@@ -26,6 +31,10 @@ public class Categorie {
 
 	public Categorie(int id, String name) {
 		this.id = id;
+		this.name = name;
+	}
+
+	public Categorie(String name) {
 		this.name = name;
 	}
 
