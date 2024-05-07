@@ -35,6 +35,10 @@ public class UserService {
 		}
 	}
 	
+	public Optional<User> findUser(String userName) {
+		return userRepo.findById(userName);
+	}
+	
 	public User createNewUser(User newUser) {
 		
 		int hash = getUserHash(newUser.getUserName());

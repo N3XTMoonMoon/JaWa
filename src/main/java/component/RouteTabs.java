@@ -3,6 +3,7 @@ package component;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.iu.JaWa.service.LoginService;
 import com.iu.JaWa.ui.ArticleUi;
 import com.iu.JaWa.ui.OrderUi;
 import com.iu.JaWa.ui.SellUi;
@@ -14,10 +15,15 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 
+import constants.UserRoleConstant;
+
 public class RouteTabs extends Tabs implements BeforeEnterObserver {
+	
 	private static final long serialVersionUID = 1L;
 	private final Map<RouterLink, Tab> routerLinkTabMap = new HashMap<>();
 
+	
+	
     public void add(RouterLink routerLink) {
         routerLink.setHighlightCondition(HighlightConditions.sameLocation());
         routerLink.setHighlightAction(
@@ -37,13 +43,37 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
     
     public static RouteTabs createTabs() {
     	
-    	//TODO: change tabs according to ROLE of user
-    	
+    	String role = LoginService.getRoleFromLoggedinUser();
     	RouteTabs routeTabs = new RouteTabs();
-		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
-		routeTabs.add(new RouterLink("Nutzer-Stammdaten", UserAdministrationUI.class));
-		routeTabs.add(new RouterLink("Artikel-Stammdaten", ArticleUi.class));
-		routeTabs.add(new RouterLink("Bestellungen",OrderUi.class));
+    	
+    	switch(role) {
+    	case(UserRoleConstant.USER):
+    		
+    		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
+    		
+    		break;
+    	case(UserRoleConstant.ADMIN):
+    		
+    		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
+			routeTabs.add(new RouterLink("Nutzer-Stammdaten", UserAdministrationUI.class));
+			routeTabs.add(new RouterLink("Artikel-Stammdaten", ArticleUi.class));
+			routeTabs.add(new RouterLink("Bestellungen",OrderUi.class));
+    		
+    		break;
+    	case(UserRoleConstant.NOT_SET):
+    		
+    		
+    		break;
+    	default:
+    		
+    		
+    		break;
+    	}
+//    	
+//		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
+//		routeTabs.add(new RouterLink("Nutzer-Stammdaten", UserAdministrationUI.class));
+//		routeTabs.add(new RouterLink("Artikel-Stammdaten", ArticleUi.class));
+//		routeTabs.add(new RouterLink("Bestellungen",OrderUi.class));
     	
     	return routeTabs;
     }

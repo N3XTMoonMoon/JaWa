@@ -1,12 +1,15 @@
 package com.iu.JaWa.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.iu.JaWa.entity.User;
 import com.vaadin.flow.server.VaadinService;
 
-import jakarta.annotation.PostConstruct;
+import constants.LoginConstant;
+import constants.UserRoleConstant;
 import jakarta.servlet.http.Cookie;
 
 @Service
@@ -22,24 +25,51 @@ public class LoginService {
 //		System.out.println(userService.createNewUser(test).toString());
 //	}
 	
-	public void saveCookie() {
+	//TODO: fix bug, where comlete ui is visible after other user is logged in
+	public void saveCookie(User loginUser) {
 		
-		//TODO: save user with loggedIn and ROLE
-		// Create a new cookie
-		Cookie myCookie = new Cookie("JaWa", "SUCCESS");
-
-		// Make cookie expire in 20 minutes
-		myCookie.setMaxAge(1200);
-
-		// Set the cookie path.
-		myCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
-
-		// Save cookie
-		VaadinService.getCurrentResponse().addCookie(myCookie);
+		Optional<User> usr = userService.findUser(loginUser.getUserName());
+		
+		if(usr.isPresent()) {
+		
+			Cookie deleteCookie = new Cookie("JaWa", UserRoleConstant.NOT_SET);
+			// Make cookie expire in 20 minutes
+			deleteCookie.setMaxAge(0);
+			// Set the cookie path.
+			deleteCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+			// Save cookie
+			VaadinService.getCurrentResponse().addCookie(deleteCookie);
+			
+			
+			// Create a new cookie
+			Cookie myCookie = new Cookie("JaWa", usr.get().getRole());
+	
+			// Make cookie expire in 20 minutes
+			myCookie.setMaxAge(120);
+	
+			// Set the cookie path.
+			myCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+	
+			// Save cookie
+			VaadinService.getCurrentResponse().addCookie(myCookie);
+		}
+	}
+	
+	//needs to be static for RouteTab initialization
+	public static String getRoleFromLoggedinUser() {
+		
+		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+		
+		for(Cookie currentCookie : cookies) {
+			if(currentCookie.getName().equals("JaWa")) {
+				return currentCookie.getValue();
+			}
+		}
+		
+		return UserRoleConstant.USER;
 	}
 	
 	/**
-	 * 
 	 * @return return "SUCCESS" or "FAILURE" depending on the fitting passwordhash
 	 */
 	public String login(String userName, int password) {
@@ -47,14 +77,14 @@ public class LoginService {
 		int userPwd = userService.getUserHash(userName);
 		
 		if(userPwd == password) {
-			return "SUCCESS";
+			return LoginConstant.SUCCESS;
 		}else {
-			return "FAILURE";
+			return LoginConstant.FAILURE;
 		}
 	}
 	
 	/**
-	 * checks if cookie "JaWa" is set to "SUCCESS"
+	 * checks if cookie "JaWa" is present
 	 * @return true if it matches. false otherwise
 	 */
 	public boolean isLoggedIn() {
@@ -62,7 +92,7 @@ public class LoginService {
 		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 		
 		for(Cookie currentCookie : cookies) {
-			if(currentCookie.getName().equals("JaWa") && currentCookie.getValue().equals("SUCCESS")) {
+			if(currentCookie.getName().equals("JaWa")) {
 				return true;
 			}
 		}
@@ -71,13 +101,13 @@ public class LoginService {
 	}
 	
 	/**
-	 * sets cookie "JaWa" to "FAILURE" if it was "SUCCESS"
+	 * sets cookie "JaWa" to "FAILURE" if it was present
 	 */
 	public void logout() {
 		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 		for(Cookie currentCookie : cookies) {
-			if(currentCookie.getName().equals("JaWa") && currentCookie.getValue().equals("SUCCESS")) {
-				currentCookie.setValue("FAILURE");
+			if(currentCookie.getName().equals("JaWa")) {
+				currentCookie.setValue(LoginConstant.FAILURE);
 			}
 		}
 	}

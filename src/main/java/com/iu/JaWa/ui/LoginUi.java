@@ -2,6 +2,7 @@ package com.iu.JaWa.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.iu.JaWa.entity.User;
 import com.iu.JaWa.service.LoginService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
@@ -10,6 +11,8 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import constants.LoginConstant;
 
 @Route("/login")
 @PageTitle("Login | JaWa")
@@ -34,13 +37,14 @@ public class LoginUi extends VerticalLayout {
 
 			String response = loginService.login(userName.getValue(), password.getValue().hashCode());
 
-			if (response.equals("SUCCESS")) {
+			if (response.equals(LoginConstant.SUCCESS)) {
 				
-				loginService.saveCookie();
+				loginService.saveCookie(new User(userName.getValue(),password.getValue().hashCode()));
 				Notification.show("Erfolgreich eingeloggt");
-				
+
 				// redirect
 				loginBtn.getUI().ifPresent(ui -> ui.navigate("/sell"));
+				
 			} else {
 				Notification.show("Falsches Passwort");
 			}
@@ -48,7 +52,4 @@ public class LoginUi extends VerticalLayout {
 
 		add(userName, password, loginBtn);
 	}
-	
-	//TODO: move to service
-	
 }
