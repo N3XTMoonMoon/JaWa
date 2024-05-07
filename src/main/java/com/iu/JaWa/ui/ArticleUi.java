@@ -1,5 +1,6 @@
 package com.iu.JaWa.ui;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import com.iu.JaWa.entity.Categorie;
 import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.service.ArticleService;
 import com.iu.JaWa.service.LoginService;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -39,8 +41,6 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 	@Autowired
 	private ArticleService artService;
 	
-//	ListBox<String> itemListBox = new ListBox<String>();
-	
 	Grid<Item> grid;
 	Select<Categorie> availabelCategories;
 	
@@ -57,14 +57,14 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		 * TODO:
 		 * - Filtern nach Kategorie y
 		 * - Auf-/abstiegend sortieren in allen Spalten y
+		 * - Artikelanlage in drop down (eigener Bereich)
 		 * 
 		 * - Anlegen von Artikeln direkt hinzufügen
 		 * - Lagerbestand anpassen können
-		 * - Artikelanlage in drop down (eigener Bereich)
 		 * 
 		 * - item Detail
 		 * 	- Name, Preis anzeigen
-		 * 	- beim Aufklappen noch den Rest wie art NR, Kategorie und so anzeigen
+		 * 	- beim Aufklappen noch den Rest wie art NR, Kategorie und so anzeigen y
 		 */
 		grid = new Grid<>(Item.class,false);
 		grid.addColumn(Item::getName).setHeader("Name").setWidth("120px");
@@ -88,6 +88,14 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		//Add new article stuff
 		
 		Button newArticleBtn = new Button("Neuer Artikel");
+		//reset all value fields
+		newArticleBtn.addClickListener(e -> {
+			articleName.setValue("");
+			articleDescrition.setValue("");
+			price.setValue(0.0);
+			articleBrand.setValue("");
+			availabelCategories.setValue(null);
+		});
 		
 		articleName = new TextField("ArtikelName");
 		articleDescrition = new TextField("Artikelbeschreibung");
@@ -96,6 +104,7 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 
 		availabelCategories = new Select<Categorie>();
 		availabelCategories.setLabel("Kategorien");
+		availabelCategories.setItemLabelGenerator(Categorie::getName);
 		
 		Button btn = new Button("Speichern",(e -> {
 			
@@ -138,6 +147,7 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 						price.getValue(),
 						selectedGridItem.getStock(),articleBrand.getValue());//maybe change getStock to fieldValue
 			}}
+			
 			try {
 				
 				artService.saveArticleToDb(item);
@@ -160,24 +170,20 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		}));
 		btn.setAutofocus(true);
 		
-		Accordion accordion = new Accordion();
-		
 		FormLayout inputLayout = new FormLayout();
 		inputLayout.add(articleName, articleDescrition, price, articleBrand, availabelCategories);
 		
 		HorizontalLayout buttonLayout = new HorizontalLayout();
-		
-//		FormLayout buttonLayout = new FormLayout();
 		buttonLayout.add(newArticleBtn,btn);
 		
 		inputLayout.add(buttonLayout);
-		
 		inputLayout.setResponsiveSteps(
 		        // Use one column by default
 		        new ResponsiveStep("0", 1),
 		        // Use two columns, if layout's width exceeds 500px
 		        new ResponsiveStep("500px", 2));
 		
+		Accordion accordion = new Accordion();
 		accordion.add("Artikeldetails",inputLayout);
 		
 		
@@ -197,7 +203,7 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		}
 		
 		availabelCategories.setItems(artService.getAllCategories());
-		availabelCategories.setLabel("Kategorien");
+		
 
 		grid.setItems(artService.getAllItems());
 	}

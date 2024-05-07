@@ -50,4 +50,21 @@ public class Categorie {
 	public String toString() {
 		return name;
 	}
+
+	//Manetory for using the select component
+	@Override
+	public boolean equals(Object cat) {
+		if(cat instanceof Categorie) {
+			return this.name.equals(((Categorie) cat).getName());
+		}else {
+			return false;
+		}
+		
+	}
+	
+	//relevant for setValue Method from select
+	@Override
+	public int hashCode() {
+		return this.name.hashCode();
+	}
 }
