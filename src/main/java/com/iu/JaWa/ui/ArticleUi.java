@@ -1,6 +1,5 @@
 package com.iu.JaWa.ui;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import com.iu.JaWa.entity.Categorie;
 import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.service.ArticleService;
 import com.iu.JaWa.service.LoginService;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;

@@ -1,5 +1,6 @@
 package com.iu.JaWa.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +53,9 @@ public class UserService {
 		}
 		
 		userRepo.delete(removeUser);
+	}
+
+	public List<User> getAllUser() {
+		return userRepo.findAll();
 	}
 }
