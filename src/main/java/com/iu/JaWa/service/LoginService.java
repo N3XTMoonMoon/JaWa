@@ -2,6 +2,8 @@ package com.iu.JaWa.service;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import jakarta.servlet.http.Cookie;
 
 @Service
 public class LoginService {
+	
+	Logger log = LoggerFactory.getLogger(LoginService.class);
 
 	@Autowired
 	private UserService userService;
@@ -52,6 +56,7 @@ public class LoginService {
 	
 			// Save cookie
 			VaadinService.getCurrentResponse().addCookie(myCookie);
+			log.info("Saved cookies for user: "+loginUser);
 		}
 	}
 	
