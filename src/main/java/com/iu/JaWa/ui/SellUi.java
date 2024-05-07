@@ -27,7 +27,7 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver{
 		
 		RouteTabs routeTabs =  RouteTabs.createTabs();
 		
-		DatePicker picker = new DatePicker();
+		DatePicker picker = new DatePicker("MDH");
 		
 		
 		Button logoutBtn = new Button("Logout");

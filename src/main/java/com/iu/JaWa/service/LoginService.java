@@ -45,7 +45,7 @@ public class LoginService {
 			Cookie myCookie = new Cookie("JaWa", usr.get().getRole());
 	
 			// Make cookie expire in 20 minutes
-			myCookie.setMaxAge(120);
+			myCookie.setMaxAge(1200);
 	
 			// Set the cookie path.
 			myCookie.setPath(VaadinService.getCurrentRequest().getContextPath());

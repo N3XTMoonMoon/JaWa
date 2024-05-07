@@ -12,11 +12,11 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="articles",schema="article")
+@SequenceGenerator(name = "some_seq", sequenceName = "article.articlenumber_seq")
 public class Item {
 
 	@Id
 	@Column(name="article_number")
-	@SequenceGenerator(name = "some_seq", sequenceName = "article.articlenumber_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "some_seq")
 	private int articleNumber;
 	
