@@ -10,6 +10,8 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
+import component.RouteTabs;
+
 @Route("/user")
 public class UserAdministrationUI extends VerticalLayout implements BeforeEnterObserver{
 

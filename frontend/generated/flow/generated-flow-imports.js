@@ -1,6 +1,5 @@
 import '@vaadin/polymer-legacy-adapter/style-modules.js';
 import '@vaadin/vertical-layout/src/vaadin-vertical-layout.js';
-import '@vaadin/tabs/src/vaadin-tabs.js';
 import '@vaadin/common-frontend/ConnectionIndicator.js';
 import '@vaadin/accordion/src/vaadin-accordion.js';
 import '@vaadin/details/src/vaadin-details.js';
@@ -64,6 +63,7 @@ import '@vaadin/side-nav/src/vaadin-side-nav-item.js';
 import '@vaadin/split-layout/src/vaadin-split-layout.js';
 import '@vaadin/tabs/src/vaadin-tab.js';
 import '@vaadin/tabsheet/src/vaadin-tabsheet.js';
+import '@vaadin/tabs/src/vaadin-tabs.js';
 import 'Frontend/generated/jar-resources/vaadin-big-decimal-field.js';
 import '@vaadin/email-field/src/vaadin-email-field.js';
 import '@vaadin/integer-field/src/vaadin-integer-field.js';

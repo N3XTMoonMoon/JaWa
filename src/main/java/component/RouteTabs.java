@@ -1,8 +1,12 @@
-package com.iu.JaWa.ui;
+package component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.iu.JaWa.ui.ArticleUi;
+import com.iu.JaWa.ui.OrderUi;
+import com.iu.JaWa.ui.SellUi;
+import com.iu.JaWa.ui.UserAdministrationUI;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -10,7 +14,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 
-class RouteTabs extends Tabs implements BeforeEnterObserver {
+public class RouteTabs extends Tabs implements BeforeEnterObserver {
 	private static final long serialVersionUID = 1L;
 	private final Map<RouterLink, Tab> routerLinkTabMap = new HashMap<>();
 
@@ -33,10 +37,13 @@ class RouteTabs extends Tabs implements BeforeEnterObserver {
     
     public static RouteTabs createTabs() {
     	
+    	//TODO: change tabs according to ROLE of user
+    	
     	RouteTabs routeTabs = new RouteTabs();
 		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
 		routeTabs.add(new RouterLink("Nutzer-Stammdaten", UserAdministrationUI.class));
 		routeTabs.add(new RouterLink("Artikel-Stammdaten", ArticleUi.class));
+		routeTabs.add(new RouterLink("Bestellungen",OrderUi.class));
     	
     	return routeTabs;
     }

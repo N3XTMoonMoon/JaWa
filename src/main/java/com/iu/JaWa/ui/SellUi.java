@@ -8,11 +8,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+
+import component.RouteTabs;
 
 @Route("/sell")
 public class SellUi extends VerticalLayout implements BeforeEnterObserver{
@@ -27,16 +27,6 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver{
 		RouteTabs routeTabs =  RouteTabs.createTabs();
 		
 		DatePicker picker = new DatePicker();
-		
-		Tab einkaufTab = new Tab("Einkauf");
-		Tab userAddingTab = new Tab("Nutzer");
-		Tab itemAddingTab = new Tab("Artikel");
-		Tabs tabs = new Tabs(einkaufTab,userAddingTab,itemAddingTab);
-		tabs.addSelectedChangeListener(e -> {
-			Notification.show("Gewechselt zu: "+e.getSelectedTab().getLabel());
-			
-		});
-		
 		
 		
 		Button logoutBtn = new Button("Logout");

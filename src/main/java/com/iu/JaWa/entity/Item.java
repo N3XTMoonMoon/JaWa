@@ -9,7 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.persistence.TableGenerator;
 
 @Entity
 @Table(name="articles",schema="article")
@@ -32,22 +31,27 @@ public class Item {
 	
 	private int stock;
 	
+	private String brand;
+	
 	//TODO: MHD hinzufügen
+	//Marke hinzufügen
+	
 	
 	@ManyToOne
 	@JoinColumn(name="category",referencedColumnName="cat_id")
 	private Categorie category;
 	
-	public Item(Categorie category, String name, String description, double price, int stock) {
+	public Item(Categorie category, String name, String description, double price, int stock, String brand) {
 		this.categoryId = category.getId();
 		this.category = category;
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.stock = stock;
+		this.brand = brand;
 	}
 
-	public Item(int articleNumber, Categorie category, String name, String description, double price, int stock) {
+	public Item(int articleNumber, Categorie category, String name, String description, double price, int stock, String brand) {
 		super();
 		this.articleNumber = articleNumber;
 		this.categoryId = category.getId();
@@ -56,11 +60,22 @@ public class Item {
 		this.description = description;
 		this.price = price;
 		this.stock = stock;
+		this.brand = brand;
 	}
 
 	public Item() {
 		super();
 	}
+	
+	
+	@Override
+	public String toString() {
+		
+		return "articleNumber: "+articleNumber+"; categoryId: "+categoryId+"; category: "+category.toString()
+		+"; name: "+name+"; description: "+description+"; price: "+price+"; stock: "+stock
+		+"; brand: "+brand;
+	}
+	
 
 	public int getArticleNumber() {
 		return articleNumber;
@@ -116,5 +131,13 @@ public class Item {
 
 	public void setStock(int stock) {
 		this.stock = stock;
+	}
+
+	public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 }

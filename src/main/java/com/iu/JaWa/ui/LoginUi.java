@@ -10,9 +10,6 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinService;
-
-import jakarta.servlet.http.Cookie;
 
 @Route("/login")
 @PageTitle("Login | JaWa")
@@ -39,7 +36,7 @@ public class LoginUi extends VerticalLayout {
 
 			if (response.equals("SUCCESS")) {
 				
-				saveCookie();
+				loginService.saveCookie();
 				Notification.show("Erfolgreich eingeloggt");
 				
 				// redirect
@@ -52,17 +49,6 @@ public class LoginUi extends VerticalLayout {
 		add(userName, password, loginBtn);
 	}
 	
-	private void saveCookie() {
-		// Create a new cookie
-		Cookie myCookie = new Cookie("JaWa", "SUCCESS");
-
-		// Make cookie expire in 20 minutes
-		myCookie.setMaxAge(1200);
-
-		// Set the cookie path.
-		myCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
-
-		// Save cookie
-		VaadinService.getCurrentResponse().addCookie(myCookie);
-	}
+	//TODO: move to service
+	
 }

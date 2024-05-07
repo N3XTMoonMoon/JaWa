@@ -1,35 +1,35 @@
 package com.iu.JaWa.ui;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import com.iu.JaWa.entity.Categorie;
 import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.service.ArticleService;
 import com.iu.JaWa.service.LoginService;
+import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
+
+import component.RouteTabs;
 
 @PageTitle("Artikelstammdaten")
 @Route("/article")
-@UIScope
 public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 	private static final long serialVersionUID = 3847590147025409919L;
 	
@@ -39,20 +39,26 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 	@Autowired
 	private ArticleService artService;
 	
-	private List<Categorie> categories = new ArrayList<Categorie>();
-	ListBox<String> itemListBox = new ListBox<String>();
+//	ListBox<String> itemListBox = new ListBox<String>();
 	
 	Grid<Item> grid;
+	Select<Categorie> availabelCategories;
 	
-	public ArticleUi() {
+	TextField articleName, articleDescrition, articleBrand;
+	NumberField price;
+	
+	Item selectedGridItem;
+	
+	public ArticleUi(){
 		
 		RouteTabs routeTabs =  RouteTabs.createTabs();
-        
+		
 		/**
 		 * TODO:
 		 * - Filtern nach Kategorie y
+		 * - Auf-/abstiegend sortieren in allen Spalten y
+		 * 
 		 * - Anlegen von Artikeln direkt hinzufügen
-		 * - Auf-/abstiegend sortieren in allen Spalten
 		 * - Lagerbestand anpassen können
 		 * - Artikelanlage in drop down (eigener Bereich)
 		 * 
@@ -61,56 +67,138 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		 * 	- beim Aufklappen noch den Rest wie art NR, Kategorie und so anzeigen
 		 */
 		grid = new Grid<>(Item.class,false);
-		grid.addColumn(Item::getArticleNumber).setHeader("Artikelnummer").setSortable(true);
-		grid.addColumn(Item::getName).setHeader("Name").setSortable(true);
+		grid.addColumn(Item::getName).setHeader("Name").setWidth("120px");
 		grid.addColumn(Item::getDescription).setHeader("Beschreibung");
-		grid.addColumn(Item::getCategory).setHeader("Kategorie").setSortable(true);
 		grid.addColumn(Item::getPrice).setHeader("Preis").setSortable(true);
-		grid.addColumn(Item::getStock).setHeader("Lagerstand");
 		
-		
-		
-		
-		
-		TextField articleName = new TextField("ArtikelName");
-		TextField articleDescrition = new TextField("Artikelbeschreibung");
-		NumberField price = new NumberField("Preis");
-
-		ComboBox<Categorie> availabelCategories = new ComboBox<Categorie>("Kategorie",categories);
-		
-		
-		Button btn = new Button("Hinzufügen",(e -> {
+		grid.addItemClickListener(e -> {
 			
-			Item item = new Item(new Categorie(1,"Lebensmittel") ,
+			selectedGridItem = e.getItem();
+
+			articleName.setValue(selectedGridItem.getName());
+			articleDescrition.setValue(selectedGridItem.getDescription());
+			price.setValue(selectedGridItem.getPrice());
+			availabelCategories.setValue(selectedGridItem.getCategory());
+			articleBrand.setValue(selectedGridItem.getBrand());
+			
+			System.out.println(e.getItem().toString());
+		});
+		
+		//---------------------------------------
+		//Add new article stuff
+		
+		Button newArticleBtn = new Button("Neuer Artikel");
+		
+		articleName = new TextField("ArtikelName");
+		articleDescrition = new TextField("Artikelbeschreibung");
+		price = new NumberField("Preis");
+		articleBrand = new TextField("Marke");
+
+		availabelCategories = new Select<Categorie>();
+		availabelCategories.setLabel("Kategorien");
+		
+		Button btn = new Button("Speichern",(e -> {
+			
+			Item item = null;
+			
+			Optional<Categorie> selectedCategorie = availabelCategories.getOptionalValue();
+			
+			if(selectedCategorie.isEmpty()){
+				
+				ConfirmDialog warning = new ConfirmDialog();
+				warning.setHeader("Keine Kategorie ausgewählt");
+				warning.setConfirmText("OK");
+				
+				//THROW ERROR = show missing categorie
+			}else {
+				
+			
+			/**
+			 * check if item is selected from grid.
+			 * If so save item in "cache" as variable.
+			 * 
+			 * If no item is selected create new one
+			 */
+			
+			if(selectedGridItem==null) {
+				
+				
+					//get selected category
+				item = new Item(selectedCategorie.get(),
 					articleName.getValue(),
 					articleDescrition.getValue(),
 					price.getValue(),
-					0);
+					0,
+					articleBrand.getValue());
+				
+			}else {
+				item=new Item(selectedGridItem.getArticleNumber(),availabelCategories.getOptionalValue().get() ,
+						articleName.getValue(),
+						articleDescrition.getValue(),
+						price.getValue(),
+						selectedGridItem.getStock(),articleBrand.getValue());//maybe change getStock to fieldValue
+			}}
+			try {
+				
+				artService.saveArticleToDb(item);
+				Notification.show("Speichern des Artikels: "+articleName.getValue()+" erfolgreich");
+			}catch(InvalidDataAccessApiUsageException err) {
+				
+				Notification.show("Fehlendes Argument. Haben Sie alle Felder ausgefüllt?");
+				System.out.println(err);
+				err.printStackTrace();
+			}catch(Exception err) {
+				
+				Notification.show("Fehler");
+				System.out.println(err);
+				err.printStackTrace();
+			}
 			
-			artService.saveArticleToDb(item);
 			
-			Notification.show("Hinzufügen des Artikels: "+articleName.getValue());
+			//TODO: Add refresh of page/grid
+			
 		}));
+		btn.setAutofocus(true);
 		
-		add(routeTabs,grid,articleName,articleDescrition,price,availabelCategories,btn);
+		Accordion accordion = new Accordion();
+		
+		FormLayout inputLayout = new FormLayout();
+		inputLayout.add(articleName, articleDescrition, price, articleBrand, availabelCategories);
+		
+		HorizontalLayout buttonLayout = new HorizontalLayout();
+		
+//		FormLayout buttonLayout = new FormLayout();
+		buttonLayout.add(newArticleBtn,btn);
+		
+		inputLayout.add(buttonLayout);
+		
+		inputLayout.setResponsiveSteps(
+		        // Use one column by default
+		        new ResponsiveStep("0", 1),
+		        // Use two columns, if layout's width exceeds 500px
+		        new ResponsiveStep("500px", 2));
+		
+		accordion.add("Artikeldetails",inputLayout);
+		
+		
+		
+		add(routeTabs,grid,accordion);
 	}
+	
 
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
 		
 		if(!loginService.isLoggedIn()) {
-			//redirect
-			Notification.show("Sie sind nicht angemeldet! Bitte melden Sie sich unter \"/login\" an");
 			
+			Notification.show("Sie sind nicht angemeldet! Bitte melden Sie sich unter \"/login\" an");
+			//redirect
 			event.rerouteTo(LoginUi.class);
 		}
 		
-		//TODO: Fill availabelCategories
-		categories.add(new Categorie(1,"Lebensmittel"));
-		categories.add(new Categorie(2,"Haushalt"));
-		
-		List<Item> items = artService.getAllItems();
-		
-		grid.setItems(items);
+		availabelCategories.setItems(artService.getAllCategories());
+		availabelCategories.setLabel("Kategorien");
+
+		grid.setItems(artService.getAllItems());
 	}
 }

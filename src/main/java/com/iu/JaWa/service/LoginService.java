@@ -22,6 +22,22 @@ public class LoginService {
 //		System.out.println(userService.createNewUser(test).toString());
 //	}
 	
+	public void saveCookie() {
+		
+		//TODO: save user with loggedIn and ROLE
+		// Create a new cookie
+		Cookie myCookie = new Cookie("JaWa", "SUCCESS");
+
+		// Make cookie expire in 20 minutes
+		myCookie.setMaxAge(1200);
+
+		// Set the cookie path.
+		myCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+
+		// Save cookie
+		VaadinService.getCurrentResponse().addCookie(myCookie);
+	}
+	
 	/**
 	 * 
 	 * @return return "SUCCESS" or "FAILURE" depending on the fitting passwordhash
