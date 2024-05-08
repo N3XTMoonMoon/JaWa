@@ -47,4 +47,8 @@ public class ArticleService {
 			catRepo.save(new Categorie(value));
 		}
 	}
+
+	public void deleteCategory(Categorie categorie) {
+		catRepo.delete(categorie);
+	}
 }

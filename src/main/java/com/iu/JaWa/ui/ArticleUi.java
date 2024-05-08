@@ -9,8 +9,10 @@ import com.iu.JaWa.entity.Categorie;
 import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.service.ArticleService;
 import com.iu.JaWa.service.LoginService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
@@ -41,29 +43,31 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 	
 	Grid<Item> grid;
 	Select<Categorie> availabelCategories;
+	Select<Categorie> availabelCategorieSelect;
 	
 	TextField articleName, articleDescrition, articleBrand;
 	NumberField price;
 	
 	Item selectedGridItem;
 	
+	/**
+	 * TODO:
+	 * - Filtern nach Kategorie y
+	 * - Auf-/abstiegend sortieren in allen Spalten y
+	 * - Artikelanlage in drop down (eigener Bereich)
+	 * 
+	 * - Anlegen von Artikeln direkt hinzufügen
+	 * - Lagerbestand anpassen können
+	 * 
+	 * - item Detail
+	 * 	- Name, Preis anzeigen
+	 * 	- beim Aufklappen noch den Rest wie art NR, Kategorie und so anzeigen y
+	 */
 	public ArticleUi(){
 		
 		RouteTabs routeTabs =  RouteTabs.createTabs();
 		
-		/**
-		 * TODO:
-		 * - Filtern nach Kategorie y
-		 * - Auf-/abstiegend sortieren in allen Spalten y
-		 * - Artikelanlage in drop down (eigener Bereich)
-		 * 
-		 * - Anlegen von Artikeln direkt hinzufügen
-		 * - Lagerbestand anpassen können
-		 * 
-		 * - item Detail
-		 * 	- Name, Preis anzeigen
-		 * 	- beim Aufklappen noch den Rest wie art NR, Kategorie und so anzeigen y
-		 */
+		
 		grid = new Grid<>(Item.class,false);
 		grid.addColumn(Item::getName).setHeader("Name").setWidth("120px");
 		grid.addColumn(Item::getDescription).setHeader("Beschreibung");
@@ -103,6 +107,8 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		availabelCategories = new Select<Categorie>();
 		availabelCategories.setLabel("Kategorien");
 		availabelCategories.setItemLabelGenerator(Categorie::getName);
+		
+		
 		
 		Button btn = new Button("Speichern",(e -> {
 			
@@ -184,13 +190,14 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		Accordion accordion = new Accordion();
 		accordion.add("Artikeldetails",inputLayout);
 		
-		TextField category = new TextField("Kategorename");
+		TextField category = new TextField("Kategoriename");
 		FormLayout categoryInputLayout = new FormLayout();
 		Button categoryBtn = new Button("Hinzufügen");
 		categoryBtn.addClickListener(e -> {
 			try {
 				artService.saveCategory(category.getValue());
-				Notification.show("Kategorie: "+category.getValue()+" gespeichert");
+				Notification.show("Kategorie: "+category.getValue()+" hinzugefügt");
+				UI.getCurrent().getPage().reload();
 			}catch(Exception ex) {
 				Notification.show(ex.getMessage());
 				ex.printStackTrace();
@@ -199,6 +206,26 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		});
 		categoryInputLayout.add(category);
 		categoryInputLayout.add(categoryBtn);
+		
+		availabelCategorieSelect = new Select<Categorie>();
+		availabelCategorieSelect.setLabel("Kategorien");
+		availabelCategorieSelect.setItemLabelGenerator(Categorie::getName);
+		
+		Button categoryRemoveBtn = new Button("Löschen");
+		categoryRemoveBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
+		        ButtonVariant.LUMO_ERROR);
+		categoryRemoveBtn.addClickListener(e -> {
+			try {
+				artService.deleteCategory(availabelCategorieSelect.getValue());
+				Notification.show("Kategorie: "+category.getValue()+" gelöscht");
+				UI.getCurrent().getPage().reload();
+			}catch(Exception ex) {
+				Notification.show(ex.getMessage());
+				ex.printStackTrace();
+			}
+		});
+		
+		categoryInputLayout.add(availabelCategorieSelect,categoryRemoveBtn);
 		accordion.add("Kategoriedetails",categoryInputLayout);
 		
 		
@@ -219,6 +246,7 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		}
 		
 		availabelCategories.setItems(artService.getAllCategories());
+		availabelCategorieSelect.setItems(artService.getAllCategories());
 		
 
 		grid.setItems(artService.getAllItems());
