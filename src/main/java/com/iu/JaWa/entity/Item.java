@@ -33,10 +33,6 @@ public class Item {
 	
 	private String brand;
 	
-	//TODO: MHD hinzufügen
-	//Marke hinzufügen
-	
-	
 	@ManyToOne
 	@JoinColumn(name="category",referencedColumnName="cat_id")
 	private Category category;
