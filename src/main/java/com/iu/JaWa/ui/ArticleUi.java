@@ -2,10 +2,12 @@ package com.iu.JaWa.ui;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
-import com.iu.JaWa.entity.Categorie;
+import com.iu.JaWa.entity.Category;
 import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.service.ArticleService;
 import com.iu.JaWa.service.LoginService;
@@ -35,6 +37,8 @@ import component.RouteTabs;
 public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 	private static final long serialVersionUID = 3847590147025409919L;
 	
+	Logger log = LoggerFactory.getLogger(LoginService.class);
+	
 	@Autowired
 	private LoginService loginService;
 	
@@ -42,11 +46,11 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 	private ArticleService artService;
 	
 	Grid<Item> grid;
-	Select<Categorie> availabelCategories;
-	Select<Categorie> availabelCategorieSelect;
+	Select<Category> availabelCategories;
+	Select<Category> availabelCategorieSelect;
 	
 	TextField articleName, articleDescrition, articleBrand;
-	NumberField price;
+	NumberField articlePrice;
 	
 	Item selectedGridItem;
 	
@@ -79,11 +83,11 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 
 			articleName.setValue(selectedGridItem.getName());
 			articleDescrition.setValue(selectedGridItem.getDescription());
-			price.setValue(selectedGridItem.getPrice());
+			articlePrice.setValue(selectedGridItem.getPrice());
 			availabelCategories.setValue(selectedGridItem.getCategory());
 			articleBrand.setValue(selectedGridItem.getBrand());
 			
-			System.out.println(e.getItem().toString());
+			log.info(e.getItem().toString());
 		});
 		
 		//---------------------------------------
@@ -94,19 +98,20 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		newArticleBtn.addClickListener(e -> {
 			articleName.setValue("");
 			articleDescrition.setValue("");
-			price.setValue(0.0);
+			articlePrice.setValue(0.0);
 			articleBrand.setValue("");
 			availabelCategories.setValue(null);
+			log.info("Artikeleingaben wurden geleert");
 		});
 		
 		articleName = new TextField("ArtikelName");
 		articleDescrition = new TextField("Artikelbeschreibung");
-		price = new NumberField("Preis");
+		articlePrice = new NumberField("Preis");
 		articleBrand = new TextField("Marke");
 
-		availabelCategories = new Select<Categorie>();
+		availabelCategories = new Select<Category>();
 		availabelCategories.setLabel("Kategorien");
-		availabelCategories.setItemLabelGenerator(Categorie::getName);
+		availabelCategories.setItemLabelGenerator(Category::getName);
 		
 		
 		
@@ -114,7 +119,7 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 			
 			Item item = null;
 			
-			Optional<Categorie> selectedCategorie = availabelCategories.getOptionalValue();
+			Optional<Category> selectedCategorie = availabelCategories.getOptionalValue();
 			
 			if(selectedCategorie.isEmpty()){
 				
@@ -134,23 +139,26 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 			 */
 			
 			if(selectedGridItem==null) {
-				
-				
-					//get selected category
+				log.info("Neuer Artikel wird erstellt:");
+
 				item = new Item(selectedCategorie.get(),
 					articleName.getValue(),
 					articleDescrition.getValue(),
-					price.getValue(),
+					articlePrice.getValue(),
 					0,
 					articleBrand.getValue());
 				
-			}else {
+			} else {
+				log.info("Bereits existierender Artikel wird aktualisiert:");
+				
 				item=new Item(selectedGridItem.getArticleNumber(),availabelCategories.getOptionalValue().get() ,
 						articleName.getValue(),
 						articleDescrition.getValue(),
-						price.getValue(),
-						selectedGridItem.getStock(),articleBrand.getValue());//maybe change getStock to fieldValue
+						articlePrice.getValue(),
+						selectedGridItem.getStock(),articleBrand.getValue());
 			}}
+			
+			log.info(item.toString());
 			
 			try {
 				
@@ -161,21 +169,20 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 				Notification.show("Fehlendes Argument. Haben Sie alle Felder ausgefüllt?");
 				System.out.println(err);
 				err.printStackTrace();
+				
+				log.error(err.getMessage());
 			}catch(Exception err) {
 				
 				Notification.show("Fehler");
 				System.out.println(err);
 				err.printStackTrace();
+				log.error(err.getMessage());
 			}
-			
-			
-			//TODO: Add refresh of page/grid
-			
 		}));
 		btn.setAutofocus(true);
 		
 		FormLayout inputLayout = new FormLayout();
-		inputLayout.add(articleName, articleDescrition, price, articleBrand, availabelCategories);
+		inputLayout.add(articleName, articleDescrition, articlePrice, articleBrand, availabelCategories);
 		
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.add(newArticleBtn,btn);
@@ -195,6 +202,8 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		Button categoryBtn = new Button("Hinzufügen");
 		categoryBtn.addClickListener(e -> {
 			try {
+				log.info("Speichern der Kategorie: "+category.getValue());
+				
 				artService.saveCategory(category.getValue());
 				Notification.show("Kategorie: "+category.getValue()+" hinzugefügt");
 				UI.getCurrent().getPage().reload();
@@ -207,18 +216,19 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		categoryInputLayout.add(category);
 		categoryInputLayout.add(categoryBtn);
 		
-		availabelCategorieSelect = new Select<Categorie>();
+		availabelCategorieSelect = new Select<Category>();
 		availabelCategorieSelect.setLabel("Kategorien");
-		availabelCategorieSelect.setItemLabelGenerator(Categorie::getName);
+		availabelCategorieSelect.setItemLabelGenerator(Category::getName);
 		
 		Button categoryRemoveBtn = new Button("Löschen");
 		categoryRemoveBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
 		        ButtonVariant.LUMO_ERROR);
 		categoryRemoveBtn.addClickListener(e -> {
 			try {
+				log.info("Löschen der Kategorie: "+availabelCategorieSelect.getValue());
 				artService.deleteCategory(availabelCategorieSelect.getValue());
 				Notification.show("Kategorie: "+category.getValue()+" gelöscht");
-				UI.getCurrent().getPage().reload();
+				UI.getCurrent().getPage().reload();//refresh page
 			}catch(Exception ex) {
 				Notification.show(ex.getMessage());
 				ex.printStackTrace();
@@ -227,11 +237,9 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		
 		categoryInputLayout.add(availabelCategorieSelect,categoryRemoveBtn);
 		accordion.add("Kategoriedetails",categoryInputLayout);
-		
-		
-		
-		
 		add(routeTabs,grid,accordion);
+		
+		log.info("Jemand hat die Seite betreten");
 	}
 	
 
@@ -247,7 +255,6 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		
 		availabelCategories.setItems(artService.getAllCategories());
 		availabelCategorieSelect.setItems(artService.getAllCategories());
-		
 
 		grid.setItems(artService.getAllItems());
 	}

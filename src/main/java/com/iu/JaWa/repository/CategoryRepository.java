@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.iu.JaWa.entity.Categorie;
+import com.iu.JaWa.entity.Category;
 
-public interface CategoryRepository extends JpaRepository<Categorie, Integer>{
+public interface CategoryRepository extends JpaRepository<Category, Integer>{
 	
-	public Optional<Categorie> findByName(String name);
+	public Optional<Category> findByName(String name);
 
 }

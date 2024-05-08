@@ -39,9 +39,9 @@ public class Item {
 	
 	@ManyToOne
 	@JoinColumn(name="category",referencedColumnName="cat_id")
-	private Categorie category;
+	private Category category;
 	
-	public Item(Categorie category, String name, String description, double price, int stock, String brand) {
+	public Item(Category category, String name, String description, double price, int stock, String brand) {
 		this.categoryId = category.getId();
 		this.category = category;
 		this.name = name;
@@ -51,7 +51,7 @@ public class Item {
 		this.brand = brand;
 	}
 
-	public Item(int articleNumber, Categorie category, String name, String description, double price, int stock, String brand) {
+	public Item(int articleNumber, Category category, String name, String description, double price, int stock, String brand) {
 		super();
 		this.articleNumber = articleNumber;
 		this.categoryId = category.getId();
@@ -93,11 +93,11 @@ public class Item {
 		this.categoryId = categoryId;
 	}
 
-	public Categorie getCategory() {
+	public Category getCategory() {
 		return category;
 	}
 
-	public void setCategory(Categorie category) {
+	public void setCategory(Category category) {
 		this.category = category;
 	}
 

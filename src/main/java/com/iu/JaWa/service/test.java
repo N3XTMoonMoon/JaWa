@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.iu.JaWa.entity.Categorie;
+import com.iu.JaWa.entity.Category;
 import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.repository.CategoryRepository;
 import com.iu.JaWa.repository.ItemRepository;
@@ -34,7 +34,7 @@ public class test {
 	}
 	
 	public void fetchCategories() {
-		Optional<Categorie> cat = catrepo.findById(1);
+		Optional<Category> cat = catrepo.findById(1);
 		
 		System.out.println(cat.get().toString());
 		

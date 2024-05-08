@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name="category",schema="article")
 @SequenceGenerator(name = "some_seq", sequenceName = "article.category_seq")
-public class Categorie {
+public class Category {
 
 	@Id
 	@Column(name="cat_id")
@@ -26,15 +26,15 @@ public class Categorie {
 	@OneToMany(mappedBy="category")
 	private List<Item> articleList;
 
-	public Categorie() {
+	public Category() {
 	}
 
-	public Categorie(int id, String name) {
+	public Category(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public Categorie(String name) {
+	public Category(String name) {
 		this.name = name;
 	}
 
@@ -63,8 +63,8 @@ public class Categorie {
 	//Manetory for using the select component
 	@Override
 	public boolean equals(Object cat) {
-		if(cat instanceof Categorie) {
-			return this.name.equals(((Categorie) cat).getName());
+		if(cat instanceof Category) {
+			return this.name.equals(((Category) cat).getName());
 		}else {
 			return false;
 		}

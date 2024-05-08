@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.iu.JaWa.entity.Categorie;
+import com.iu.JaWa.entity.Category;
 import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.repository.CategoryRepository;
 import com.iu.JaWa.repository.ItemRepository;
@@ -32,23 +32,23 @@ public class ArticleService {
 		return itemList;
 	}
 
-	public List<Categorie> getAllCategories() {
+	public List<Category> getAllCategories() {
 		
 		
 		//filter placehoder category
-		return catRepo.findAll().stream().filter(e -> !e.equals(new Categorie(0, "MISSING"))).collect(Collectors.toList());
+		return catRepo.findAll().stream().filter(e -> !e.equals(new Category(0, "MISSING"))).collect(Collectors.toList());
 	}
 
 	public void saveCategory(String value) {
 		
-		Optional<Categorie> catResult = catRepo.findByName(value);
+		Optional<Category> catResult = catRepo.findByName(value);
 
 		if(!catResult.isPresent()) {
-			catRepo.save(new Categorie(value));
+			catRepo.save(new Category(value));
 		}
 	}
 
-	public void deleteCategory(Categorie categorie) {
+	public void deleteCategory(Category categorie) {
 		catRepo.delete(categorie);
 	}
 }
