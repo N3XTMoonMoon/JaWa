@@ -70,7 +70,10 @@ public class Item {
 	
 	@Override
 	public String toString() {
-		
+		return name;
+	}
+	
+	public String log() {
 		return "articleNumber: "+articleNumber+"; categoryId: "+categoryId+"; category: "+category.toString()
 		+"; name: "+name+"; description: "+description+"; price: "+price+"; stock: "+stock
 		+"; brand: "+brand;

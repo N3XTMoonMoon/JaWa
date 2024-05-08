@@ -7,6 +7,7 @@ import com.iu.JaWa.service.LoginService;
 import com.iu.JaWa.ui.ArticleUi;
 import com.iu.JaWa.ui.OrderUi;
 import com.iu.JaWa.ui.SellUi;
+import com.iu.JaWa.ui.StoringUi;
 import com.iu.JaWa.ui.UserAdministrationUI;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -58,11 +59,10 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
 			routeTabs.add(new RouterLink("Nutzer-Stammdaten", UserAdministrationUI.class));
 			routeTabs.add(new RouterLink("Artikel-Stammdaten", ArticleUi.class));
 			routeTabs.add(new RouterLink("Bestellungen",OrderUi.class));
+			routeTabs.add(new RouterLink("Lagerverwaltung",StoringUi.class));
     		
     		break;
     	case(UserRoleConstant.NOT_SET):
-    		
-    		
     		break;
     	default:
     		

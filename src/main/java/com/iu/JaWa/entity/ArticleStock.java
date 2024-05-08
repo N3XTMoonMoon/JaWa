@@ -24,6 +24,7 @@ public class ArticleStock {
 	
 	private int amount;
 	
+	//TODO: remove packaging
 	private String packaging;
 	
 	private LocalDate mhd;
@@ -37,11 +38,21 @@ public class ArticleStock {
 		this.mhd = mhd;
 	}
 	
+	//TODO: remove packaging
 	public ArticleStock(int articleId, int amount, String packaging, LocalDate mhd) {
 		this.articleId = articleId;
 		this.amount = amount;
 		this.packaging = packaging;
 		this.mhd = mhd;
+	}
+	
+	public ArticleStock(int articleId, int amount, LocalDate mhd) {
+		this.articleId = articleId;
+		this.amount = amount;
+		this.mhd = mhd;
+	}
+	
+	public ArticleStock() {
 	}
 
 	public int getId() {

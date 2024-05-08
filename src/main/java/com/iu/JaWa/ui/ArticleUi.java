@@ -87,7 +87,7 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 			availabelCategories.setValue(selectedGridItem.getCategory());
 			articleBrand.setValue(selectedGridItem.getBrand());
 			
-			log.info(e.getItem().toString());
+			log.info(e.getItem().log());
 		});
 		
 		//---------------------------------------
@@ -158,7 +158,7 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 						selectedGridItem.getStock(),articleBrand.getValue());
 			}}
 			
-			log.info(item.toString());
+			log.info(item.log());
 			
 			try {
 				
