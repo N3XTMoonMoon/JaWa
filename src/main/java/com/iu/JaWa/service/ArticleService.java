@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.iu.JaWa.entity.ArticleStock;
 import com.iu.JaWa.entity.Category;
+import com.iu.JaWa.entity.CurrentStock;
 import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.repository.ArticleStockRepository;
 import com.iu.JaWa.repository.CategoryRepository;
+import com.iu.JaWa.repository.CurrentStockRepository;
 import com.iu.JaWa.repository.ItemRepository;
 
 @Service
@@ -26,6 +28,9 @@ public class ArticleService {
 	
 	@Autowired
 	private ArticleStockRepository stockRepo;
+	
+	@Autowired
+	private CurrentStockRepository currentStockRepo;
 	
 	public Item saveArticleToDb(Item item) {
 		
@@ -81,4 +86,17 @@ public class ArticleService {
 			stockRepo.save(newStock);
 		}
 	}
+
+	public List<CurrentStock> getAllCurrentItemsInStock() {
+		return currentStockRepo.findAll();
+	}
+
+	public void removeStockEntry(CurrentStock selectedEntry) {
+		Optional<ArticleStock> artStock = stockRepo.findByArticleIdAndMhd(selectedEntry.getArticleNumber(), selectedEntry.getMhd());
+		if(artStock.isPresent()) {
+			stockRepo.delete(artStock.get());
+		}
+		
+	}
+	
 }

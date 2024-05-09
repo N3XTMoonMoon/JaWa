@@ -1,15 +1,20 @@
 package com.iu.JaWa.ui;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.iu.JaWa.entity.ArticleStock;
+import com.iu.JaWa.entity.Category;
+import com.iu.JaWa.entity.CurrentStock;
 import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.service.ArticleService;
 import com.iu.JaWa.service.LoginService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
@@ -36,18 +41,36 @@ public class StoringUi extends VerticalLayout implements BeforeEnterObserver{
 	@Autowired
 	private ArticleService artService;
 
-	Grid<ArticleStock> grid;
+	Grid<CurrentStock> grid;
 	Select<Item> availableItems;
+	
+	CurrentStock selectedEntry;
 	
 	public StoringUi() {
 		
 		RouteTabs routeTabs =  RouteTabs.createTabs();
 		
-		grid = new Grid<ArticleStock>();
-		grid.addColumn(ArticleStock::getArticleId).setHeader("Artikel-Nummer").setSortable(true);
-		grid.addColumn(ArticleStock::getAmount).setHeader("Menge");
-		grid.addColumn(ArticleStock::getMhd).setHeader("Mindesthaltbarkeitsdatum").setSortable(true);
-		grid.addColumn(ArticleStock::getPackaging).setHeader("Verpackung");
+		grid = new Grid<CurrentStock>();
+		grid.addColumn(CurrentStock::getName).setHeader("Artikel-Nummer").setSortable(true);
+		grid.addColumn(CurrentStock::getAmount).setHeader("Menge");
+		grid.addColumn(CurrentStock::getMhd).setHeader("Mindesthaltbarkeitsdatum").setSortable(true);
+		
+		grid.addSelectionListener(selection -> {
+		    Optional<CurrentStock> SelectedEntry = selection.getFirstSelectedItem();
+		    if (SelectedEntry.isPresent()) {
+		    	selectedEntry = SelectedEntry.get();
+		    }
+		});
+		
+		Button removeStockBtn = new Button("Eintrag löschen");
+		removeStockBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+		removeStockBtn.addClickListener(e -> {
+			if(selectedEntry!=null) {
+				artService.removeStockEntry(selectedEntry);
+			}
+			reload();
+		});
+		
 		
 		HorizontalLayout horiFirstLayout = new HorizontalLayout();
 		DatePicker picker = new DatePicker("MDH");
@@ -61,9 +84,17 @@ public class StoringUi extends VerticalLayout implements BeforeEnterObserver{
 		addBtn.addClickListener(e -> {
 			log.info("Artikel wird eingelagert: "+availableItems.getValue()+" mit Menge: "+amount.getValue());
 			
-			artService.addToStock(availableItems.getValue(), amount.getValue(), picker.getValue());
+			if(availableItems.getValue().getCategory().equals(new Category("Lebensmittel"))) {
+				
+				if(availableItems.getValue()!=null && picker.getValue()!= null) {
+					artService.addToStock(availableItems.getValue(), amount.getValue(), picker.getValue());
+				}
+			}else {
+				artService.addToStock(availableItems.getValue(), amount.getValue(), LocalDate.of(9999, 12, 31));
+			}
 			
-			UI.getCurrent().getPage().reload();
+			
+			reload();
 		});
 		horiSecondLayout.add(addBtn);
 		
@@ -71,7 +102,11 @@ public class StoringUi extends VerticalLayout implements BeforeEnterObserver{
 		
 		
 		
-		add(routeTabs,grid,horiFirstLayout,horiSecondLayout);
+		add(routeTabs,grid,removeStockBtn,horiFirstLayout,horiSecondLayout);
+	}
+	
+	private void reload() {
+		UI.getCurrent().getPage().reload();
 	}
 	
 	@Override
@@ -86,6 +121,6 @@ public class StoringUi extends VerticalLayout implements BeforeEnterObserver{
 		
 		availableItems.setItems(artService.getAllItems());
 
-		grid.setItems(artService.getAllItemsInStock());
+		grid.setItems(artService.getAllCurrentItemsInStock());
 	}
 }
