@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -36,6 +37,9 @@ public class Item {
 	@ManyToOne
 	@JoinColumn(name="category",referencedColumnName="cat_id")
 	private Category category;
+	
+	@OneToOne(mappedBy = "article")
+	private CurrentStock currentStock;
 	
 	public Item(Category category, String name, String description, double price, int stock, String brand) {
 		this.categoryId = category.getId();

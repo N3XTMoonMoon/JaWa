@@ -10,8 +10,6 @@ import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.repository.CategoryRepository;
 import com.iu.JaWa.repository.ItemRepository;
 
-import jakarta.annotation.PostConstruct;
-
 @Service
 public class test {
 
