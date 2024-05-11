@@ -7,8 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -29,9 +29,10 @@ public class CurrentStock {
 	@Id
 	private LocalDate mhd;
 	
-	@OneToOne
+	@ManyToOne
 	@MapsId
-	@JoinColumn(name="article_number")//, referencedColumnName = "article_number")
+	@JoinColumn(name="article_number")
+	//, referencedColumnName = "article_number")
 	private Item article;
 	
 	public CurrentStock() {
@@ -86,5 +87,8 @@ public class CurrentStock {
 		this.mhd = mhd;
 	}
 	
-	
+	public String getCategory() {
+		//hope this never crashes lol
+		return this.article.getCategory().getName();
+	}
 }

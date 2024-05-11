@@ -1,5 +1,7 @@
 package com.iu.JaWa.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,7 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -38,8 +40,8 @@ public class Item {
 	@JoinColumn(name="category",referencedColumnName="cat_id")
 	private Category category;
 	
-	@OneToOne(mappedBy = "article")
-	private CurrentStock currentStock;
+	@OneToMany(mappedBy = "article")
+	private List<CurrentStock> currentStock;
 	
 	public Item(Category category, String name, String description, double price, int stock, String brand) {
 		this.categoryId = category.getId();
