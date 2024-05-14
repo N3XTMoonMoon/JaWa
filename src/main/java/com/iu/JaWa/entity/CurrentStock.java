@@ -1,6 +1,7 @@
 package com.iu.JaWa.entity;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,6 +48,15 @@ public class CurrentStock {
 		this.mhd = mhd;
 	}
 	
+	public CurrentStock(CurrentStock selectedArt, int amount) {
+		this.articleNumber=selectedArt.getArticleNumber();
+		this.name=selectedArt.getName();
+		this.amount=amount;
+		this.price=selectedArt.getPrice();
+		this.mhd=selectedArt.getMhd();
+		this.article = selectedArt.getArticle();
+	}
+
 	public int getArticleNumber() {
 		return articleNumber;
 	}
@@ -91,4 +101,38 @@ public class CurrentStock {
 		//hope this never crashes lol
 		return this.article.getCategory().getName();
 	}
+
+	public Item getArticle() {
+		return article;
+	}
+
+	public void setArticle(Item article) {
+		this.article = article;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(amount, article, articleNumber, mhd, name, price);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		return name.equals(((CurrentStock) obj).getName());
+	}
+
+	public void addAmount(int amount) {
+		this.amount += amount;
+	}
+
+	public void removeAmount(int amount) {
+		this.amount -= amount;
+	}
+	
+	
 }
