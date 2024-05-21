@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.javaparser.utils.Log;
 import com.iu.JaWa.entity.ArticleStock;
 import com.iu.JaWa.entity.Category;
 import com.iu.JaWa.entity.CurrentStock;
@@ -97,6 +98,28 @@ public class ArticleService {
 			stockRepo.delete(artStock.get());
 		}
 		
+	}
+
+	public void removeStock(List<CurrentStock> cartArticles) {
+//		List<ArticleStock> artStockList = new ArrayList<ArticleStock>();
+		
+		
+		for(CurrentStock curr : cartArticles) {
+			
+			Optional<ArticleStock> stock = stockRepo.findByArticleIdAndMhd(curr.getArticleNumber(), curr.getMhd());
+			if(!stock.isPresent()) {
+				Log.info("Artikel ist nicht im Lager vorhanden. Komisch.....");
+			} else {
+				ArticleStock currStock = stock.get();
+				if(currStock.getAmount()==curr.getAmount()) {//whole stock is bought
+					stockRepo.delete(currStock);
+				} else {//not hte whole Stock is bought
+					currStock.setAmount(curr.getAmount());
+					stockRepo.save(currStock);
+				}
+			}
+			
+		}
 	}
 	
 }

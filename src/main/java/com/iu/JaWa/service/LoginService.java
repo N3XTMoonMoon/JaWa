@@ -116,4 +116,9 @@ public class LoginService {
 			}
 		}
 	}
+
+	public String getCurrentUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

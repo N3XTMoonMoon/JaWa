@@ -33,7 +33,6 @@ public class CurrentStock {
 	@ManyToOne
 	@MapsId
 	@JoinColumn(name="article_number")
-	//, referencedColumnName = "article_number")
 	private Item article;
 	
 	public CurrentStock() {
@@ -134,5 +133,7 @@ public class CurrentStock {
 		this.amount -= amount;
 	}
 	
-	
+	public ArticleStock convertToArticleStock() {
+		return new ArticleStock();
+	}
 }

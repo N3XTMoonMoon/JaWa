@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.iu.JaWa.entity.CurrentStock;
 import com.iu.JaWa.service.ArticleService;
 import com.iu.JaWa.service.LoginService;
+import com.iu.JaWa.service.OrderService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
@@ -38,6 +39,9 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 
 	@Autowired
 	private ArticleService artService;
+	
+	@Autowired
+	private OrderService orderService;
 
 	Grid<CurrentStock> availableArticleGrid;
 	List<CurrentStock> availableArticleList;
@@ -126,6 +130,7 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 		orderBtn.addClickListener(click -> {
 			// TODO: Bestll Tabelle mit Status hinzufügen abei noch amount beachten
 			// TODO: add ConfirmDialog
+			addOrder(cartArticleList);
 		});
 
 		Button logoutBtn = new Button("Logout");
@@ -157,6 +162,14 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 		vert.add(logoutBtn);
 
 		add(routeTabs, vert);
+	}
+	
+	//TODO: add posibility to add signed in user
+	private void addOrder(List<CurrentStock> cartArticles) {
+		orderService.saveOrder(cartArticles, "dummy");
+		artService.removeStock(cartArticles);
+		cartArticleList.removeAll(cartArticles);
+		cartArticleDataProvider.refreshAll();
 	}
 
 	private void addStockItemToCart(CurrentStock selectedArt, int amount) {
@@ -244,7 +257,6 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 		availableArticleList = new ArrayList<>(artService.getAllCurrentItemsInStock());
 		availableStockDataProvider = new ListDataProvider<CurrentStock>(availableArticleList);
 		availableArticleGrid.setDataProvider(availableStockDataProvider);
-//		availableArticles.setItems();
 		cartArticleList = new ArrayList<CurrentStock>();
 		cartArticleDataProvider = new ListDataProvider<CurrentStock>(cartArticleList);
 		cartArticles.setDataProvider(cartArticleDataProvider);

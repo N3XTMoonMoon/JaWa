@@ -15,12 +15,12 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="articles",schema="article")
-@SequenceGenerator(name = "some_seq", sequenceName = "article.articlenumber_seq")
+@SequenceGenerator(name = "article_number_seq", sequenceName = "article.articlenumber_seq")
 public class Item {
 
 	@Id
 	@Column(name="article_number")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "some_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "article_number_seq")
 	private int articleNumber;
 	
 	@Column(name="category",insertable=false, updatable=false)
@@ -42,7 +42,7 @@ public class Item {
 	
 	@OneToMany(mappedBy = "article")
 	private List<CurrentStock> currentStock;
-	
+		
 	public Item(Category category, String name, String description, double price, int stock, String brand) {
 		this.categoryId = category.getId();
 		this.category = category;
@@ -144,5 +144,13 @@ public class Item {
 
 	public void setBrand(String brand) {
 		this.brand = brand;
+	}
+
+	public List<CurrentStock> getCurrentStock() {
+		return currentStock;
+	}
+
+	public void setCurrentStock(List<CurrentStock> currentStock) {
+		this.currentStock = currentStock;
 	}
 }
