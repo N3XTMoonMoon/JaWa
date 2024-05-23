@@ -7,7 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iu.JaWa.entity.User;
+import com.iu.JaWa.model.CookieUserValue;
 import com.vaadin.flow.server.VaadinService;
 
 import constants.LoginConstant;
@@ -22,6 +25,7 @@ public class LoginService {
 	@Autowired
 	private UserService userService;
 	
+	static ObjectMapper objMapper = new ObjectMapper();
 
 //	private void test() {
 //		System.out.println(userService.getUserHash("admin"));
@@ -35,7 +39,7 @@ public class LoginService {
 		Optional<User> usr = userService.findUser(loginUser.getUserName());
 		
 		if(usr.isPresent()) {
-		
+			
 			Cookie deleteCookie = new Cookie("JaWa", UserRoleConstant.NOT_SET);
 			// Make cookie expire in 20 minutes
 			deleteCookie.setMaxAge(-1);
@@ -45,8 +49,16 @@ public class LoginService {
 			VaadinService.getCurrentResponse().addCookie(deleteCookie);
 			
 			
+			CookieUserValue cookieUser = new CookieUserValue(usr.get().getUserName(), LoginConstant.SUCCESS , usr.get().getRole());
+			String jsonString = "";
+			try {
+				jsonString = objMapper.writeValueAsString(cookieUser);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			
 			// Create a new cookie
-			Cookie myCookie = new Cookie("JaWa", usr.get().getRole());
+			Cookie myCookie = new Cookie("JaWa", jsonString);
 	
 			// Make cookie expire in 20 minutes
 			myCookie.setMaxAge(1200);
@@ -62,17 +74,23 @@ public class LoginService {
 	
 	//needs to be static for RouteTab initialization
 	public static String getRoleFromLoggedinUser() {
-		
 		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 		
 		for(Cookie currentCookie : cookies) {
 			if(currentCookie.getName().equals("JaWa")) {
-				return currentCookie.getValue();
+				
+				try {
+					CookieUserValue user = objMapper.readValue(currentCookie.getValue(), CookieUserValue.class);
+					return user.getRole();
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+				}
+				
 			}
 		}
-		
-		return UserRoleConstant.USER;
+		return "";
 	}
+	
 	
 	/**
 	 * @return return "SUCCESS" or "FAILURE" depending on the fitting passwordhash
@@ -97,7 +115,7 @@ public class LoginService {
 		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 		
 		for(Cookie currentCookie : cookies) {
-			if(currentCookie.getName().equals("JaWa")) {
+			if(currentCookie.getName().equals("JaWa") && currentCookie.getValue().contains(LoginConstant.SUCCESS)) {
 				return true;
 			}
 		}
@@ -118,7 +136,20 @@ public class LoginService {
 	}
 
 	public String getCurrentUser() {
-		// TODO Auto-generated method stub
-		return null;
+		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+		
+		for(Cookie currentCookie : cookies) {
+			if(currentCookie.getName().equals("JaWa")) {
+				
+				try {
+					CookieUserValue user = objMapper.readValue(currentCookie.getValue(), CookieUserValue.class);
+					return user.getUserName();
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}
+		return "";
 	}
 }
