@@ -16,13 +16,13 @@ import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.repository.ArticleStockRepository;
 import com.iu.JaWa.repository.CategoryRepository;
 import com.iu.JaWa.repository.CurrentStockRepository;
-import com.iu.JaWa.repository.ItemRepository;
+import com.iu.JaWa.repository.ArticleRepository;
 
 @Service
 public class ArticleService {
 
 	@Autowired
-	private ItemRepository itemRepo;
+	private ArticleRepository itemRepo;
 	
 	@Autowired
 	private CategoryRepository catRepo;

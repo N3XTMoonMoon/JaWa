@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="category",schema="article")
-@SequenceGenerator(name = "some_seq", sequenceName = "article.category_seq")
+@SequenceGenerator(name = "some_seq", sequenceName = "article.category_seq", allocationSize = 1)
 public class Category {
 
 	@Id

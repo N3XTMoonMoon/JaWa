@@ -58,8 +58,8 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
     		routeTabs.add(new RouterLink("Einkauf", SellUi.class));
 			routeTabs.add(new RouterLink("Nutzer-Stammdaten", UserAdministrationUI.class));
 			routeTabs.add(new RouterLink("Artikel-Stammdaten", ArticleUi.class));
-			routeTabs.add(new RouterLink("Bestellungen",OrderUi.class));
 			routeTabs.add(new RouterLink("Lagerverwaltung",StoringUi.class));
+			routeTabs.add(new RouterLink("Bestellungen",OrderUi.class));
     		
     		break;
     	case(UserRoleConstant.NOT_SET):

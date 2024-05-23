@@ -38,7 +38,7 @@ public class LoginService {
 		
 			Cookie deleteCookie = new Cookie("JaWa", UserRoleConstant.NOT_SET);
 			// Make cookie expire in 20 minutes
-			deleteCookie.setMaxAge(0);
+			deleteCookie.setMaxAge(-1);
 			// Set the cookie path.
 			deleteCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
 			// Save cookie

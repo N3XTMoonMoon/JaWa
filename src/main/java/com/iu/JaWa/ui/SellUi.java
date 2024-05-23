@@ -13,6 +13,7 @@ import com.iu.JaWa.service.ArticleService;
 import com.iu.JaWa.service.LoginService;
 import com.iu.JaWa.service.OrderService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
@@ -55,6 +56,8 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 	CurrentStock selectedCartEntry;
 
 	IntegerField articleAmount;
+	
+	String status="";
 
 	public SellUi() {
 
@@ -77,6 +80,8 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 			}
 
 		});
+		
+		
 
 		cartArticles = new Grid<CurrentStock>();
 		cartArticles.addColumn(CurrentStock::getName).setHeader("Artikel-Nummer").setSortable(true);
@@ -125,12 +130,36 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 			}
 
 		});
-
+		
+		
+		
+		ConfirmDialog confirm = new ConfirmDialog();
+		
+		confirm.setCancelable(true);
+		confirm.addCancelListener(event -> {
+			status = "canceled";
+		});
+		confirm.addConfirmListener(event -> status = "order");
+		confirm.setConfirmText("OK");
+		
 		Button orderBtn = new Button("Bestellen");
 		orderBtn.addClickListener(click -> {
 			// TODO: Bestll Tabelle mit Status hinzufügen abei noch amount beachten
 			// TODO: add ConfirmDialog
-			addOrder(cartArticleList);
+			if(!cartArticleList.isEmpty()) {
+				confirm.setText("Wollen Sie die ausgewählten Artikel bestellen?");
+			}else {
+				confirm.setText("Aktuell befinden sich keine Artikel in Ihrem Warenkorb");
+			}
+			
+			confirm.open();
+			
+			if(status.equals("order")) {
+				addOrder(cartArticleList);
+//				cartArticleList.removeAll(availableArticleList);
+				clearCartArticles();
+			}
+			status = "";
 		});
 
 		Button logoutBtn = new Button("Logout");
@@ -164,6 +193,11 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 		add(routeTabs, vert);
 	}
 	
+	private void clearCartArticles() {
+		cartArticleDataProvider.getItems().clear();
+		cartArticleDataProvider.refreshAll();
+	}
+
 	//TODO: add posibility to add signed in user
 	private void addOrder(List<CurrentStock> cartArticles) {
 		orderService.saveOrder(cartArticles, "dummy");
@@ -257,6 +291,7 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 		availableArticleList = new ArrayList<>(artService.getAllCurrentItemsInStock());
 		availableStockDataProvider = new ListDataProvider<CurrentStock>(availableArticleList);
 		availableArticleGrid.setDataProvider(availableStockDataProvider);
+		
 		cartArticleList = new ArrayList<CurrentStock>();
 		cartArticleDataProvider = new ListDataProvider<CurrentStock>(cartArticleList);
 		cartArticles.setDataProvider(cartArticleDataProvider);

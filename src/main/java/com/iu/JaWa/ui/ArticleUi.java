@@ -75,7 +75,9 @@ public class ArticleUi extends VerticalLayout implements BeforeEnterObserver{
 		grid = new Grid<>(Item.class,false);
 		grid.addColumn(Item::getName).setHeader("Name").setWidth("120px");
 		grid.addColumn(Item::getDescription).setHeader("Beschreibung");
+		grid.addColumn(Item::getBrand).setHeader("Marke");
 		grid.addColumn(Item::getPrice).setHeader("Preis").setSortable(true);
+		grid.addColumn(Item::getCategory).setHeader("Kategorie").setSortable(true);
 		
 		grid.addItemClickListener(e -> {
 			

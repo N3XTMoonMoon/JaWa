@@ -1,5 +1,7 @@
 package com.iu.JaWa.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,8 +21,9 @@ public class OrderContent {
 		
 	@Column(name="article_number")
 	private int articleNumber;
+	
 		
-//	@ManyToOne(cascade = CascadeType.PERSIST) //This would work if no amount is needed
+//	@ManyToOne(cascade = CascadeType.PERSIST) //This would work if amount is not needed
 //	@MapsId("articleNumber")
 //	@JoinColumn(name="article_Number")
 //	private Item article;
@@ -48,4 +51,23 @@ public class OrderContent {
 	public int getAmount() {
 		return amount;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(amount, articleNumber, orderId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OrderContent other = (OrderContent) obj;
+		return amount == other.amount && articleNumber == other.articleNumber && orderId == other.orderId;
+	}
+	
+	
 }

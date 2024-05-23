@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.iu.JaWa.entity.Item;
 
-public interface ItemRepository extends JpaRepository<Item, Integer>{
+public interface ArticleRepository extends JpaRepository<Item, Integer>{
 
 }

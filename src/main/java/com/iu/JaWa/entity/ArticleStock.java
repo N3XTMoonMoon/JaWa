@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="article_stock",schema="article")
-@SequenceGenerator(name = "some_seq", sequenceName = "article.stock_seq")
+@SequenceGenerator(name = "some_seq", sequenceName = "article.stock_seq", allocationSize = 1)
 public class ArticleStock {
 
 	@Id

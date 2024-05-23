@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import com.iu.JaWa.entity.Category;
 import com.iu.JaWa.entity.Item;
 import com.iu.JaWa.repository.CategoryRepository;
-import com.iu.JaWa.repository.ItemRepository;
+import com.iu.JaWa.repository.ArticleRepository;
 
 @Service
 public class test {
 
 	@Autowired
-	ItemRepository itemRepo;
+	ArticleRepository itemRepo;
 	
 	@Autowired
 	CategoryRepository catrepo;
