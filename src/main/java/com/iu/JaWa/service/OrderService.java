@@ -71,8 +71,17 @@ public class OrderService {
 			}
 		}
 		
-//		ordercontent.add()
-		
 		return orderContentList;
+	}
+
+	public void setOrderStatus(Order order, String newStatus) {
+		if(order != null) {
+			order.setStatus(newStatus);
+			orderRepo.save(order);
+		}
+	}
+
+	public List<Order> getAllOrders() {
+		return orderRepo.findAll();
 	}
 }

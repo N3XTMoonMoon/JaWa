@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.iu.JaWa.entity.Order;
-import com.iu.JaWa.entity.OrderContent;
 import com.iu.JaWa.model.OrderContentView;
 import com.iu.JaWa.service.LoginService;
 import com.iu.JaWa.service.OrderService;
@@ -27,6 +26,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import component.RouteTabs;
+import constants.OrderConstant;
 
 @Route("/order")
 @PageTitle("Bestellübersicht")
@@ -45,11 +45,11 @@ public class OrderUi extends VerticalLayout implements BeforeEnterObserver{
 	List<Order> orderList;
 	ListDataProvider<Order> orderDataProvider;
 	
-	//TODO: create new POJO for "view"
 	Grid<OrderContentView> orderContentGrid;
 	List<OrderContentView> orderContentList;
 	ListDataProvider<OrderContentView> orderContentDataProvider;
 	
+	Order selectedEntry;
 	
 	public OrderUi() {
 		
@@ -57,9 +57,8 @@ public class OrderUi extends VerticalLayout implements BeforeEnterObserver{
 		
 		orderGrid = new Grid<Order>();
 		orderGrid.addColumn(Order::getOrdId).setHeader("Bestellnummer");
-		orderGrid.addColumn(Order::getOrderUser).setHeader("Kunde"); //TODO: implement customer (User)
+		orderGrid.addColumn(Order::getOrderUser).setHeader("Kunde");
 		orderGrid.addColumn(Order::getStatus).setHeader("Status");
-//		orderGrid.addColumn(Order::getStatus).setHeader("Preis");
 		orderGrid.setWidth("75%");
 		
 		orderGrid.addSelectionListener(e -> {
@@ -67,6 +66,7 @@ public class OrderUi extends VerticalLayout implements BeforeEnterObserver{
 			if(selected.isPresent()) {
 				log.info("Bestellung wurde ausgewählt: "+ selected.get().getOrdId());
 				fillOrderContent(selected.get().getOrdId());
+				selectedEntry = selected.get();
 			}
 			
 		});
@@ -79,8 +79,22 @@ public class OrderUi extends VerticalLayout implements BeforeEnterObserver{
 		orderContentGrid.setWidth("50%");
 		
 		Button inProgressBtn = new Button("In Bearbeitung");
+		inProgressBtn.addClickListener(e -> {
+			ordService.setOrderStatus(selectedEntry,OrderConstant.IN_PROGRESS);
+			refreshOrderGrid();
+		});
+		
 		Button paidBtn = new Button("Bezahlt");
+		paidBtn.addClickListener(e -> {
+			ordService.setOrderStatus(selectedEntry,OrderConstant.BILLED);
+			refreshOrderGrid();
+		});
+		
 		Button sentBtn = new Button("Waare Versendet");
+		sentBtn.addClickListener(e -> {
+			ordService.setOrderStatus(selectedEntry,OrderConstant.SENT);
+			refreshOrderGrid();
+		});
 		
 		VerticalLayout buttonVertLayout = new VerticalLayout();
 		buttonVertLayout.add(inProgressBtn, paidBtn, sentBtn);
@@ -104,6 +118,11 @@ public class OrderUi extends VerticalLayout implements BeforeEnterObserver{
 		add(routeTabs,vertTwo,orderContentGrid);
 	}
 	
+	private void refreshOrderGrid() {
+		orderList = ordService.getAllOrders();
+		orderDataProvider.refreshAll();
+	}
+
 	private void fillOrderContent(int orderNumber) {
 		orderContentList = ordService.getOrderContent(orderNumber);
 		//refresh items according to selected order
@@ -122,7 +141,7 @@ public class OrderUi extends VerticalLayout implements BeforeEnterObserver{
 			event.rerouteTo(LoginUi.class);
 		}
 		
-		orderList = ordService.getAllOpenOrders();
+		orderList = ordService.getAllOrders();
 		orderDataProvider = new ListDataProvider<Order>(orderList);
 		orderGrid.setDataProvider(orderDataProvider);
 		

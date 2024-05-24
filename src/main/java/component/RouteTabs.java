@@ -9,6 +9,7 @@ import com.iu.JaWa.ui.OrderUi;
 import com.iu.JaWa.ui.SellUi;
 import com.iu.JaWa.ui.StoringUi;
 import com.iu.JaWa.ui.UserAdministrationUI;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -46,6 +47,10 @@ public class RouteTabs extends Tabs implements BeforeEnterObserver {
     	
     	String role = LoginService.getRoleFromLoggedinUser();
     	RouteTabs routeTabs = new RouteTabs();
+    	
+    	if(role==null) {
+    		return routeTabs;
+    	}
     	
     	switch(role) {
     	case(UserRoleConstant.USER):
