@@ -7,10 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iu.JaWa.entity.User;
-import com.iu.JaWa.model.CookieUserValue;
 import com.vaadin.flow.server.VaadinService;
 
 import constants.LoginConstant;
@@ -24,8 +21,6 @@ public class LoginService {
 
 	@Autowired
 	private UserService userService;
-	
-	static ObjectMapper objMapper = new ObjectMapper();
 
 //	private void test() {
 //		System.out.println(userService.getUserHash("admin"));
@@ -49,23 +44,18 @@ public class LoginService {
 			VaadinService.getCurrentResponse().addCookie(deleteCookie);
 			
 			
-			CookieUserValue cookieUser = new CookieUserValue(usr.get().getUserName(), LoginConstant.SUCCESS , usr.get().getRole());
-			String jsonString = "";
-			try {
-				jsonString = objMapper.writeValueAsString(cookieUser);
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
-			
 			// Create a new cookie
-			Cookie myCookie = new Cookie("JaWa", jsonString);
-	
+			Cookie myCookie = new Cookie("JaWa", LoginConstant.SUCCESS);
+			//setAttributes
+			myCookie.setAttribute("userName", usr.get().getUserName());
+			myCookie.setAttribute("role", usr.get().getRole());
+			myCookie.setAttribute("loginStatus", LoginConstant.SUCCESS);
 			// Make cookie expire in 20 minutes
 			myCookie.setMaxAge(1200);
 	
 			// Set the cookie path.
 			myCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
-	
+			
 			// Save cookie
 			VaadinService.getCurrentResponse().addCookie(myCookie);
 			log.info("Saved cookies for user: "+loginUser);
@@ -78,14 +68,7 @@ public class LoginService {
 		
 		for(Cookie currentCookie : cookies) {
 			if(currentCookie.getName().equals("JaWa")) {
-				
-				try {
-					CookieUserValue user = objMapper.readValue(currentCookie.getValue(), CookieUserValue.class);
-					return user.getRole();
-				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-				}
-				
+				return currentCookie.getAttribute("role");
 			}
 		}
 		return "";
@@ -115,7 +98,7 @@ public class LoginService {
 		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 		
 		for(Cookie currentCookie : cookies) {
-			if(currentCookie.getName().equals("JaWa") && currentCookie.getValue().contains(LoginConstant.SUCCESS)) {
+			if(currentCookie.getName().equals("JaWa") && currentCookie.getAttribute("loginStatus").contains(LoginConstant.SUCCESS)) {
 				return true;
 			}
 		}
@@ -130,7 +113,7 @@ public class LoginService {
 		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 		for(Cookie currentCookie : cookies) {
 			if(currentCookie.getName().equals("JaWa")) {
-				currentCookie.setValue(LoginConstant.FAILURE);
+				currentCookie.setAttribute("loginStatus",LoginConstant.FAILURE);
 			}
 		}
 	}
@@ -140,14 +123,7 @@ public class LoginService {
 		
 		for(Cookie currentCookie : cookies) {
 			if(currentCookie.getName().equals("JaWa")) {
-				
-				try {
-					CookieUserValue user = objMapper.readValue(currentCookie.getValue(), CookieUserValue.class);
-					return user.getUserName();
-				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-				}
-				
+				return currentCookie.getAttribute("userName");
 			}
 		}
 		return "";
