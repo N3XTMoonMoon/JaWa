@@ -9,6 +9,5 @@ import com.iu.JaWa.entity.OrderContent;
 public interface OrderContentRepository extends JpaRepository<OrderContent, Integer>{
 
 	List<OrderContent> findByOrderId(int orderNumber);
-
 	
 }

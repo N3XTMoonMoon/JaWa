@@ -69,8 +69,7 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 		availableArticleGrid.addColumn(CurrentStock::getAmount).setHeader("Menge");
 		availableArticleGrid.addColumn(CurrentStock::getCategory).setHeader("Kategorie").setSortable(true);
 		availableArticleGrid.addColumn(CurrentStock::getMhd).setHeader("Mindesthaltbarkeitsdatum").setSortable(true);
-
-		// TODO: add multi selection: Maybe....
+		
 		availableArticleGrid.addSelectionListener(selection -> {
 			Optional<CurrentStock> SelectedEntry = selection.getFirstSelectedItem();
 			if (SelectedEntry.isPresent()) {
@@ -144,8 +143,6 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 		
 		Button orderBtn = new Button("Bestellen");
 		orderBtn.addClickListener(click -> {
-			// TODO: Bestll Tabelle mit Status hinzufügen abei noch amount beachten
-			// TODO: add ConfirmDialog
 			if(!cartArticleList.isEmpty()) {
 				confirm.setText("Wollen Sie die ausgewählten Artikel bestellen?");
 			}else {
@@ -155,8 +152,8 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 			confirm.open();
 			
 			if(status.equals("order")) {
-				addOrder(cartArticleList);
-//				cartArticleList.removeAll(availableArticleList);
+				String userName = loginService.getCurrentUser();
+				addOrder(cartArticleList,userName);
 				clearCartArticles();
 			}
 			status = "";
@@ -198,9 +195,8 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 		cartArticleDataProvider.refreshAll();
 	}
 
-	//TODO: add posibility to add signed in user
-	private void addOrder(List<CurrentStock> cartArticles) {
-		orderService.saveOrder(cartArticles, "dummy");
+	private void addOrder(List<CurrentStock> cartArticles, String user) {
+		orderService.saveOrder(cartArticles, user);
 		artService.removeStock(cartArticles);
 		cartArticleList.removeAll(cartArticles);
 		cartArticleDataProvider.refreshAll();
@@ -273,11 +269,6 @@ public class SellUi extends VerticalLayout implements BeforeEnterObserver {
 		cartArticleDataProvider.refreshAll();
 		availableStockDataProvider.refreshAll();
 	}
-
-	// uncomment when needed
-//	private void reload() {
-//		UI.getCurrent().getPage().reload();
-//	}
 
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {

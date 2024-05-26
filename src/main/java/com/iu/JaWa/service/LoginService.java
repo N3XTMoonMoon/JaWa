@@ -45,17 +45,22 @@ public class LoginService {
 			
 			
 			// Create a new cookie
-			Cookie myCookie = new Cookie("JaWa", usr.get().getRole());
+			Cookie roleCookie = new Cookie("JaWa", usr.get().getRole());
 			
 			// Make cookie expire in 20 minutes
-			myCookie.setMaxAge(1200);
+			roleCookie.setMaxAge(1200);
 	
 			// Set the cookie path.
-			myCookie.setPath("http://localhost:8080/*");
-			//myCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+			roleCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+			
+			// Create a new cookie
+			Cookie usernameCookie = new Cookie("JaWaUserName", usr.get().getUserName());
+			usernameCookie.setMaxAge(1200);
+			usernameCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
 			
 			// Save cookie
-			VaadinService.getCurrentResponse().addCookie(myCookie);
+			VaadinService.getCurrentResponse().addCookie(roleCookie);
+			VaadinService.getCurrentResponse().addCookie(usernameCookie);
 			log.info("Saved cookies for user: "+loginUser);
 		}
 	}
@@ -120,7 +125,7 @@ public class LoginService {
 		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 		
 		for(Cookie currentCookie : cookies) {
-			if(currentCookie.getName().equals("JaWa")) {
+			if(currentCookie.getName().equals("JaWaUserName")) {
 				return currentCookie.getValue();
 			}
 		}
